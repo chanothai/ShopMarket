@@ -29,7 +29,7 @@ public class ClientHttp {
 
     public ClientHttp(Context context){
         this.context = context;
-        retrofit = RetrofitAPI.newInstance("192.168.4.1").getRetrofit();
+        retrofit = RetrofitAPI.newInstance("http://192.168.4.1").getRetrofit();
         service = retrofit.create(LogApi.class);
         gson = new GsonBuilder().disableHtmlEscaping().create();
     }
@@ -50,6 +50,32 @@ public class ClientHttp {
                     EventBusCart.getInstance().getEventBus().post(response.body());
                 }catch (NullPointerException e){
                     e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseStatusLight> call, Throwable t) {
+                t.printStackTrace();
+                ResponseStatusLight responseLight = new ResponseStatusLight();
+                responseLight.setStatus("offline");
+                EventBusCart.getInstance().getEventBus().post(responseLight);
+            }
+        });
+    }
+
+    public void requestCloseLight(int path) {
+        Call<ResponseStatusLight> callClose = service.callCloseLight(path);
+        callClose.enqueue(new Callback<ResponseStatusLight>() {
+            @Override
+            public void onResponse(Call<ResponseStatusLight> call, Response<ResponseStatusLight> response) {
+                try{
+                    EventBusCart.getInstance().getEventBus().post(response.body());
+                }catch (NullPointerException e){
+                    e.printStackTrace();
+
+                    ResponseStatusLight responseLight = new ResponseStatusLight();
+                    responseLight.setStatus("offline");
+                    EventBusCart.getInstance().getEventBus().post(responseLight);
                 }
             }
 

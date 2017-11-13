@@ -1,6 +1,8 @@
 package com.company.zicure.shopmarket.network;
 
 
+import java.io.IOException;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -27,20 +29,21 @@ public class RetrofitAPI {
     }
 
     public Retrofit getRetrofit(){
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        try{
+            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+            OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(url)
+                    .client(client)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
 
-        retrofit = new Retrofit.Builder()
-                .baseUrl(url)
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        if (retrofit != null){
-            return retrofit;
+        }catch (NullPointerException e) {
+            e.printStackTrace();
         }
-        return null;
+
+        return retrofit;
     }
 }

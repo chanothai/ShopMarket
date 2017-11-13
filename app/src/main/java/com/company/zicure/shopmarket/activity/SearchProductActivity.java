@@ -1,5 +1,6 @@
 package com.company.zicure.shopmarket.activity;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -17,6 +18,7 @@ import com.company.zicure.shopmarket.adapter.CategoryAdapter;
 import com.company.zicure.shopmarket.adapter.SearchProductAdapter;
 import com.company.zicure.shopmarket.common.BaseActivity;
 import com.company.zicure.shopmarket.model.ResponseStatusLight;
+import com.company.zicure.shopmarket.network.ClientHttp;
 import com.company.zicure.shopmarket.util.EventBusCart;
 import com.company.zicure.shopmarket.util.NextzyUtil;
 import com.squareup.otto.Subscribe;
@@ -26,6 +28,11 @@ public class SearchProductActivity extends BaseActivity implements CategoryAdapt
     private Toolbar toolbar = null;
     private ImageView imgLogo = null;
     private RecyclerView listSearchItem;
+
+    //Properties
+    private Context context = this;
+    private int lightID = 0;
+    private OnCloseLightListener onCloseLightListener = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +41,7 @@ public class SearchProductActivity extends BaseActivity implements CategoryAdapt
 
         bindView();
         if (savedInstanceState == null){
-            listSearchItem.setAdapter(new SearchProductAdapter(this));
+            listSearchItem.setAdapter(new SearchProductAdapter(this,this));
         }
     }
 
@@ -53,7 +60,7 @@ public class SearchProductActivity extends BaseActivity implements CategoryAdapt
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case android.R.id.home:
-                finish();
+                onBackPressed();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -67,18 +74,45 @@ public class SearchProductActivity extends BaseActivity implements CategoryAdapt
 
     @Subscribe
     public void onEventResponseStatusLight(ResponseStatusLight statusLight){
-        Toast.makeText(this, statusLight.getLed1(), Toast.LENGTH_SHORT).show();
+        dismissDialog();
+        Toast.makeText(this, statusLight.getStatus(), Toast.LENGTH_SHORT).show();
+
+        if (!statusLight.getStatus().equalsIgnoreCase("offline")) {
+            NextzyUtil.requestDelay(new NextzyUtil.LaunchCallback() {
+                @Override
+                public void onLaunchCallback() {
+                    ClientHttp.getInstance(context).requestCloseLight(lightID);
+                }
+            });
+        }else{
+            onCloseLightListener.setClose();
+        }
     }
 
 
     @Override
-    public void setItemClick(View view, int position) {
+    public void setItemClick(View view, int position, OnCloseLightListener onCloseLightListener) {
+        this.onCloseLightListener = onCloseLightListener;
         showLoadingDialog();
-        NextzyUtil.launchDelay(new NextzyUtil.LaunchCallback() {
-            @Override
-            public void onLaunchCallback() {
+        switch (position) {
+            case 0:
+                lightID = 1;
+                break;
+            case 1:
+                lightID = 2;
+                break;
+            case 2:
+                lightID = 3;
+                break;
+            case 3:
+                lightID = 4;
+                break;
+        }
 
-            }
-        });
+        ClientHttp.getInstance(this).requestLight(lightID);
+    }
+
+    public interface OnCloseLightListener {
+        void setClose();
     }
 }

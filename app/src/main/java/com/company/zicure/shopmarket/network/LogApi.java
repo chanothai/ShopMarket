@@ -11,6 +11,9 @@ import retrofit2.http.Path;
  * Created by BallOmO on 10/11/2016 AD.
  */
 public interface LogApi {
-    @GET("/led1/{id}")
+    @GET("/led{id}/1")
     Call<ResponseStatusLight> callLight(@Path("id") int id);
+
+    @GET("/led{id}/0")
+    Call<ResponseStatusLight> callCloseLight(@Path("id") int id);
 }

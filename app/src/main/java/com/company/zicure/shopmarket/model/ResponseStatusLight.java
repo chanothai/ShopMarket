@@ -7,6 +7,9 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class ResponseStatusLight {
+    @SerializedName("status")
+    private String status;
+
     @SerializedName("led1")
     private String led1;
 
@@ -49,5 +52,13 @@ public class ResponseStatusLight {
 
     public void setLed4(String led4) {
         this.led4 = led4;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

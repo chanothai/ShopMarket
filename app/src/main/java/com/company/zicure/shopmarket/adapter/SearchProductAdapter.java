@@ -6,19 +6,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.company.zicure.shopmarket.R;
+import com.company.zicure.shopmarket.activity.SearchProductActivity;
 import com.company.zicure.shopmarket.network.ClientHttp;
 
 /**
  * Created by ballomo on 11/12/2017 AD.
  */
 
-public class SearchProductAdapter extends RecyclerView.Adapter<SearchProductAdapter.SearchProductHolder>{
+public class SearchProductAdapter extends RecyclerView.Adapter<SearchProductAdapter.SearchProductHolder> {
 
+    private CategoryAdapter.OnClickCategoryListener onClickCategoryListener = null;
     private Context context = null;
-    public SearchProductAdapter(Context context){
+
+    public SearchProductAdapter(Context context, CategoryAdapter.OnClickCategoryListener onClickCategoryListener){
         this.context = context;
+        this.onClickCategoryListener = onClickCategoryListener;
     }
 
     @Override
@@ -28,26 +33,21 @@ public class SearchProductAdapter extends RecyclerView.Adapter<SearchProductAdap
     }
 
     @Override
-    public void onBindViewHolder(SearchProductHolder holder, final int position) {
+    public void onBindViewHolder(final SearchProductHolder holder, final int position) {
         holder.imgSearchItem.setImageResource(R.drawable.yumyum12);
 
         holder.setClickCategory(new CategoryAdapter.OnClickCategoryListener() {
             @Override
-            public void setItemClick(View view, int position) {
-                switch (position) {
-                    case 0:
-                        ClientHttp.getInstance(context).requestLight(1);
-                        break;
-                    case 1:
-                        ClientHttp.getInstance(context).requestLight(2);
-                        break;
-                    case 2:
-                        ClientHttp.getInstance(context).requestLight(3);
-                        break;
-                    case 3:
-                        ClientHttp.getInstance(context).requestLight(4);
-                        break;
-                }
+            public void setItemClick(View view, int position, SearchProductActivity.OnCloseLightListener onCloseLightListener) {
+                holder.shadow.setVisibility(View.VISIBLE);
+                onClickCategoryListener.setItemClick(view, position, onCloseLightListener);
+            }
+        });
+
+        holder.setCloseLight(new SearchProductActivity.OnCloseLightListener() {
+            @Override
+            public void setClose() {
+                holder.shadow.setVisibility(View.GONE);
             }
         });
     }
@@ -57,13 +57,17 @@ public class SearchProductAdapter extends RecyclerView.Adapter<SearchProductAdap
         return 4;
     }
 
-    public class SearchProductHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class SearchProductHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public ImageView imgSearchItem;
+        public View shadow;
+
         public CategoryAdapter.OnClickCategoryListener clickCategory;
+        public SearchProductActivity.OnCloseLightListener closeLight;
 
         public SearchProductHolder(View itemView) {
             super(itemView);
             imgSearchItem = (ImageView) itemView.findViewById(R.id.img_search_item);
+            shadow = (View) itemView.findViewById(R.id.shadow_bg);
             itemView.setOnClickListener(this);
         }
 
@@ -71,9 +75,13 @@ public class SearchProductAdapter extends RecyclerView.Adapter<SearchProductAdap
             this.clickCategory = clickCategory;
         }
 
+        public void setCloseLight(SearchProductActivity.OnCloseLightListener closeLight){
+            this.closeLight = closeLight;
+        }
+
         @Override
         public void onClick(View v) {
-            clickCategory.setItemClick(v, getAdapterPosition());
+            clickCategory.setItemClick(v, getAdapterPosition(), closeLight);
         }
     }
 }

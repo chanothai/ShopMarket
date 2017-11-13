@@ -18,6 +18,17 @@ public class NextzyUtil {
         },1000);
     }
 
+    public static void requestDelay(final LaunchCallback callback) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (callback != null) {
+                    callback.onLaunchCallback();
+                }
+            }
+        },10000);
+    }
+
     public static void launch(final LaunchCallback callback){
         new Handler().post(new Runnable() {
             @Override

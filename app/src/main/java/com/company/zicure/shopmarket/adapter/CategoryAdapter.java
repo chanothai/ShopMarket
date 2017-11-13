@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.company.zicure.shopmarket.R;
 import com.company.zicure.shopmarket.activity.SearchProductActivity;
 import com.company.zicure.shopmarket.activity.ShopActivity;
+import com.company.zicure.shopmarket.util.NextzyUtil;
 
 /**
  * Created by Pakgon on 11/9/2017 AD.
@@ -21,9 +22,13 @@ import com.company.zicure.shopmarket.activity.ShopActivity;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryHolder> {
     private Context context = null;
-    public CategoryAdapter(Context context){
+    private CategoryAdapter.OnClickCategoryListener onClickCategoryListener = null;
+
+    public CategoryAdapter(Context context,CategoryAdapter.OnClickCategoryListener onClickCategoryListener){
         this.context = context;
+        this.onClickCategoryListener = onClickCategoryListener;
     }
+
 
     @Override
     public CategoryHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -34,26 +39,19 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     @Override
     public void onBindViewHolder(CategoryHolder holder, int position) {
+
+        holder.setOnItemClick(new OnClickCategoryListener() {
+            @Override
+            public void setItemClick(View view, int position, SearchProductActivity.OnCloseLightListener onCloseLightListener) {
+                onClickCategoryListener.setItemClick(view, position, onCloseLightListener);
+            }
+        });
+
         if (position == 0) {
             holder.title.setText("ตรวจสอบราคาสินค้าและคำนวณราคารวม");
-            holder.setOnItemClick(new OnClickCategoryListener() {
-                @Override
-                public void setItemClick(View view, int position) {
-                    Intent intent = new Intent(context, ShopActivity.class);
-                    context.startActivity(intent);
-                }
-            });
         }
-
-        if (position == 1) {
+        else if (position == 1) {
             holder.title.setText("ค้นหาเชลจำหน่ายสินค้า");
-            holder.setOnItemClick(new OnClickCategoryListener() {
-                @Override
-                public void setItemClick(View view, int position) {
-                    Intent intent = new Intent(context, SearchProductActivity.class);
-                    context.startActivity(intent);
-                }
-            });
         }
     }
 
@@ -77,7 +75,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
         @Override
         public void onClick(View view) {
-            onClickCategoryListener.setItemClick(view, getAdapterPosition());
+            onClickCategoryListener.setItemClick(view, getAdapterPosition(), null);
         }
 
         public void setOnItemClick(OnClickCategoryListener onClickCategory){
@@ -86,6 +84,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     }
 
     public interface OnClickCategoryListener {
-        void setItemClick(View view, int position);
+        void setItemClick(View view, int position, SearchProductActivity.OnCloseLightListener onCloseLightListener);
     }
 }
