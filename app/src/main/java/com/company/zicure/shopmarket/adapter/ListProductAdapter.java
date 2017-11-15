@@ -22,8 +22,9 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
     private Context context = null;
     private ArrayList<ItemStoreModel> arrItemStore = null;
 
-    public ListProductAdapter(Context context){
+    public ListProductAdapter(Context context, ArrayList<ItemStoreModel> arrItemStore){
         this.context = context;
+        this.arrItemStore = arrItemStore;
     }
 
     public void setItemStore(ArrayList<ItemStoreModel> arrItemStore){

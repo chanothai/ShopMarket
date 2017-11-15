@@ -49,9 +49,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
         if (position == 0) {
             holder.title.setText("ตรวจสอบราคาสินค้าและคำนวณราคารวม");
+            holder.imgCategory.setImageDrawable(context.getDrawable(R.drawable.cart));
         }
         else if (position == 1) {
             holder.title.setText("ค้นหาเชลจำหน่ายสินค้า");
+            holder.imgCategory.setImageDrawable(context.getDrawable(R.drawable.online_shop));
         }
     }
 
@@ -85,5 +87,17 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     public interface OnClickCategoryListener {
         void setItemClick(View view, int position, SearchProductActivity.OnCloseLightListener onCloseLightListener);
+    }
+
+    public interface OnClickCategoryListener2 {
+        void setItemClick2(View view, int position, SearchProductActivity.OnCloseLightListener2 onCloseLightListener);
+    }
+
+    public interface OnClickCategoryListener3 {
+        void setItemClick3(View view, int position, SearchProductActivity.OnCloseLightListener3 onCloseLightListener);
+    }
+
+    public interface OnClickCategoryListener4 {
+        void setItemClick4(View view, int position, SearchProductActivity.OnCloseLightListener4 onCloseLightListener);
     }
 }

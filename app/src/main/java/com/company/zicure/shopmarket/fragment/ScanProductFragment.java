@@ -9,12 +9,22 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.company.zicure.shopmarket.R;
+import com.company.zicure.shopmarket.activity.MainActivity;
+import com.company.zicure.shopmarket.activity.ShopActivity;
+import com.company.zicure.shopmarket.adapter.DetailProductAdapter;
+import com.company.zicure.shopmarket.common.BaseActivity;
+import com.company.zicure.shopmarket.model.ItemStoreModel;
+import com.company.zicure.shopmarket.util.ModelCart;
 import com.google.zxing.Result;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
@@ -32,6 +42,11 @@ public class ScanProductFragment extends Fragment implements ZXingScannerView.Re
 
     // Make: View
     private ZXingScannerView scannerView = null;
+    private RecyclerView recyclerView = null;
+    private ImageView imgItem = null;
+
+    // Make: Properties
+    private DetailProductAdapter detailProductAdapter = null;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -40,6 +55,7 @@ public class ScanProductFragment extends Fragment implements ZXingScannerView.Re
 
     public ScanProductFragment() {
         // Required empty public constructor
+
     }
 
     /**
@@ -75,6 +91,13 @@ public class ScanProductFragment extends Fragment implements ZXingScannerView.Re
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_scan_product, container, false);
         scannerView = (ZXingScannerView) root.findViewById(R.id.view_scan_qr);
+        scannerView.setResultHandler(this);
+
+        recyclerView = (RecyclerView) root.findViewById(R.id.recyclerview_category);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        imgItem = (ImageView) root.findViewById(R.id.img_product);
         return root;
     }
 
@@ -83,7 +106,6 @@ public class ScanProductFragment extends Fragment implements ZXingScannerView.Re
         super.onActivityCreated(savedInstanceState);
         if (savedInstanceState == null) {
             permissionCamera();
-            scannerView.setResultHandler(this);
         }
     }
 
@@ -108,6 +130,23 @@ public class ScanProductFragment extends Fragment implements ZXingScannerView.Re
 
     @Override
     public void handleResult(Result result) {
-        Toast.makeText(getActivity(), result.getText(), Toast.LENGTH_SHORT).show();
+        String id = result.getText();
+        if (ModelCart.getInstance().getItemStoreModel().size() > 0){
+            for (int i = 0; i < ModelCart.getInstance().getItemStoreModel().size(); i++) {
+                if (!id.equalsIgnoreCase(ModelCart.getInstance().getItemStoreModel().get(i).getBarcode())){
+                    ((ShopActivity)getActivity()).queryItem(id);
+                }
+            }
+        }else{
+            ((ShopActivity)getActivity()).queryItem(id);
+        }
+    }
+
+    public void setDetailItem(ItemStoreModel itemStoreModel){
+        detailProductAdapter = new DetailProductAdapter(itemStoreModel);
+        recyclerView.setAdapter(detailProductAdapter);
+
+        int imgId = getActivity().getResources().getIdentifier(itemStoreModel.getImgItem(), "drawable", getActivity().getPackageName());
+        imgItem.setImageResource(imgId);
     }
 }

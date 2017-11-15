@@ -5,21 +5,13 @@ package com.company.zicure.shopmarket.model;
  */
 
 public class ItemStoreModel {
-    private String id;
+    private String barcode;
     private String name;
     private int qty;
     private String price;
     private String imgItem;
     private String promotion;
     private String detail;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -67,5 +59,13 @@ public class ItemStoreModel {
 
     public void setQty(int qty) {
         this.qty = qty;
+    }
+
+    public String getBarcode() {
+        return barcode;
+    }
+
+    public void setBarcode(String barcode) {
+        this.barcode = barcode;
     }
 }

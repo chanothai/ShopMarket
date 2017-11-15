@@ -29,6 +29,17 @@ public class NextzyUtil {
         },10000);
     }
 
+    public static void deleyCamera(final LaunchCallback callback) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (callback != null) {
+                    callback.onLaunchCallback();
+                }
+            }
+        },3000);
+    }
+
     public static void launch(final LaunchCallback callback){
         new Handler().post(new Runnable() {
             @Override

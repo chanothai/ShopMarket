@@ -11,8 +11,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="380dp"
-        android:padding="16dp"
-        android:background="?android:attr/selectableItemBackground">
+        android:background="?android:attr/selectableItemBackground"
+        android:padding="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,22 +26,22 @@
                 android:layout_weight="0.3">
 
                 <ImageView
+                    android:id="@+id/img_category"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"
-                    android:scaleType="centerCrop"
+                    android:scaleType="fitCenter"
                     android:src="@mipmap/ic_launcher" />
 
             </RelativeLayout>
 
-            <TextView
+            <com.company.zicure.shopmarket.view.LabelView
                 android:id="@+id/title_category"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:text="TITLE"
+                android:text="หัวข้อ"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"
                 android:textSize="30sp"
                 android:textStyle="bold" />

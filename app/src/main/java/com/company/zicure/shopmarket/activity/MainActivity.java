@@ -16,6 +16,8 @@ import com.company.zicure.shopmarket.R;
 import com.company.zicure.shopmarket.adapter.CategoryAdapter;
 import com.company.zicure.shopmarket.common.BaseActivity;
 import com.company.zicure.shopmarket.database.DBHelper;
+import com.company.zicure.shopmarket.model.ItemStoreModel;
+import com.company.zicure.shopmarket.util.ModelCart;
 import com.company.zicure.shopmarket.util.NextzyUtil;
 
 import java.io.File;
@@ -32,11 +34,6 @@ public class MainActivity extends BaseActivity implements CategoryAdapter.OnClic
     private RecyclerView recyclerView = null;
 
     // Make: properties
-    private SQLiteDatabase mDb = null;
-    private DBHelper mHelper = null;
-    private Cursor mCursor = null;
-
-    private ArrayList<String> arrItem = null;
     private Context context = this;
 
     @Override
@@ -44,14 +41,7 @@ public class MainActivity extends BaseActivity implements CategoryAdapter.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         bindView();
-        arrItem = new ArrayList<>();
-        checkDatabase();
-        initDataBase();
         initCategory();
-
-        if (savedInstanceState == null) {
-
-        }
     }
 
     private void bindView(){
@@ -65,49 +55,8 @@ public class MainActivity extends BaseActivity implements CategoryAdapter.OnClic
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        mHelper.close();
-        mDb.close();
-    }
+    public void onBackPressed() {
 
-    private void initDataBase(){
-        mHelper = new DBHelper(this);
-        mDb = mHelper.getWritableDatabase();
-
-        mCursor = mDb.rawQuery("SELECT name FROM " + DBHelper.TABLE_NAME, null);
-        mCursor.moveToFirst();
-        while (!mCursor.isAfterLast()){
-            arrItem.add("Name : " + mCursor.getString(mCursor.getColumnIndex(DBHelper.COL_NAME)));
-            mCursor.moveToNext();
-        }
-
-        Log.d("Database", arrItem.get(0));
-    }
-
-    private void checkDatabase(){
-        String url = "/data/data/" + getPackageName() + "/databases/" + DBHelper.DB_NAME;
-        File file = new File(url);
-
-        if (!file.exists()){
-            try{
-                mHelper = new DBHelper(this);
-                mDb = mHelper.getWritableDatabase();
-                mDb.close();
-                mHelper.close();
-                InputStream in = getAssets().open(DBHelper.DB_NAME);
-                OutputStream out = new FileOutputStream(url);
-                byte[] buffer = new byte[in.available()];
-                in.read(buffer);
-                out.write(buffer, 0, buffer.length);
-                in.close();
-                out.close();
-            } catch (FileNotFoundException e){
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     @Override
