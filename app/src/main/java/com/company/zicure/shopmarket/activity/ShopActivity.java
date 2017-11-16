@@ -47,13 +47,14 @@ public class ShopActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shop);
         bindView();
-        checkDatabase();
 
+        checkDatabase();
         if (savedInstanceState == null) {
             callListStoreItem();
             callCamera();
             mHelper = new DBHelper(this);
             mDb = mHelper.getWritableDatabase();
+
         }
     }
 
@@ -63,6 +64,8 @@ public class ShopActivity extends BaseActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setToolbar(toolbar);
     }
+
+
 
     private void callCamera(){
         FragmentManager fm = getSupportFragmentManager();
@@ -100,31 +103,40 @@ public class ShopActivity extends BaseActivity {
     }
 
     public void queryItem(String id){
-        ArrayList<ItemStoreModel> arrItemStore = new ArrayList<>();
+        int price = 0;
         try{
-            mCursor = mDb.rawQuery("SELECT * FROM " + DBHelper.TABLE_NAME + " WHERE barcode = '" + id + "'" , null);
 
-            if (mCursor.moveToFirst()){
-                ItemStoreModel itemStoreModel = new ItemStoreModel();
-                itemStoreModel.setBarcode(mCursor.getString(mCursor.getColumnIndex(DBHelper.COL_BARCODE)));
-                itemStoreModel.setName(mCursor.getString(mCursor.getColumnIndex(DBHelper.COL_NAME)));
-                itemStoreModel.setPrice(mCursor.getString(mCursor.getColumnIndex(DBHelper.COL_PRICE)));
-                itemStoreModel.setQty(1);
-                itemStoreModel.setImgItem(mCursor.getString(mCursor.getColumnIndex(DBHelper.COL_IMAGE)));
-                itemStoreModel.setPromotion(mCursor.getString(mCursor.getColumnIndex(DBHelper.COL_PROMOTION)));
+            if (!checkItem(id)) {
+                mCursor = mDb.rawQuery("SELECT * FROM " + DBHelper.TABLE_NAME + " WHERE barcode = '" + id + "'" , null);
+                mCursor.moveToFirst();
 
-                arrItemStore.add(itemStoreModel);
-                ModelCart.getInstance().setItemStoreModel(arrItemStore);
+                while (!mCursor.isAfterLast()){
+                    ItemStoreModel itemStoreModel = new ItemStoreModel();
+                    itemStoreModel.setBarcode(mCursor.getString(mCursor.getColumnIndex(DBHelper.COL_BARCODE)));
+                    itemStoreModel.setName(mCursor.getString(mCursor.getColumnIndex(DBHelper.COL_NAME)));
+                    itemStoreModel.setPrice(mCursor.getString(mCursor.getColumnIndex(DBHelper.COL_PRICE)));
+                    itemStoreModel.setQty(1);
+                    itemStoreModel.setImgItem(mCursor.getString(mCursor.getColumnIndex(DBHelper.COL_IMAGE)));
+                    itemStoreModel.setPromotion(mCursor.getString(mCursor.getColumnIndex(DBHelper.COL_PROMOTION)));
 
-                fragment.setDetailItem(itemStoreModel);
-                listProductFragment.setStoreItem(arrItemStore);
+                    ModelCart.getInstance().getItemStoreModel().add(itemStoreModel);
 
-                NextzyUtil.deleyCamera(new NextzyUtil.LaunchCallback() {
-                    @Override
-                    public void onLaunchCallback() {
-                        fragment.resumeCamera();
-                    }
-                });
+                    fragment.setDetailItem(itemStoreModel);
+                    price = Integer.parseInt(mCursor.getString(mCursor.getColumnIndex(DBHelper.COL_PRICE)));
+                    mCursor.moveToNext();
+                }
+
+
+                if (ModelCart.getInstance().getItemStoreModel().size() == 1) {
+                    listProductFragment.setStoreItem(ModelCart.getInstance().getItemStoreModel());
+                }else{
+                    listProductFragment.updateStoreItem();
+                }
+
+                listProductFragment.updateResultTotalPrice(price);
+                deleyCamera();
+            }else{
+                deleyCamera();
             }
 
         }catch (SQLException e){
@@ -133,6 +145,53 @@ public class ShopActivity extends BaseActivity {
             fragment.resumeCamera();
         }
     }
+
+    private void deleyCamera(){
+        showLoadingDialog();
+        NextzyUtil.deleyCamera(new NextzyUtil.LaunchCallback() {
+            @Override
+            public void onLaunchCallback() {
+                dismissDialog();
+            }
+        });
+
+        NextzyUtil.launchDelay(new NextzyUtil.LaunchCallback() {
+            @Override
+            public void onLaunchCallback() {
+                fragment.resumeCamera();
+            }
+        });
+    }
+
+    private boolean checkItem(String id) {
+        if (ModelCart.getInstance().getItemStoreModel() != null) {
+            if (ModelCart.getInstance().getItemStoreModel().size() > 0) {
+                for (int i = 0; i < ModelCart.getInstance().getItemStoreModel().size(); i++) {
+                    if (ModelCart.getInstance().getItemStoreModel().get(i).getBarcode().equalsIgnoreCase(id)) {
+
+                        //Set QTY
+                        int qty = ModelCart.getInstance().getItemStoreModel().get(i).getQty();
+                        qty += 1;
+                        ModelCart.getInstance().getItemStoreModel().get(i).setQty(qty);
+
+                        //Set Price
+                        int result = ModelCart.getInstance().getItemStoreModel().get(i).getResultPrice() +
+                                Integer.parseInt(ModelCart.getInstance().getItemStoreModel().get(i).getPrice());
+                        ModelCart.getInstance().getItemStoreModel().get(i).setResultPrice(result);
+
+                        listProductFragment.updateStoreItem();
+                        listProductFragment.updateResultTotalPrice(Integer.parseInt(ModelCart.getInstance().getItemStoreModel().get(i).getPrice()));
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        return false;
+    }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -155,8 +214,7 @@ public class ShopActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         fragment.stopCamera();
-        mHelper.close();
-        mDb.close();
+
     }
 
     @Override
@@ -167,5 +225,12 @@ public class ShopActivity extends BaseActivity {
                 fragment.startCamera();
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mHelper.close();
+        mDb.close();
     }
 }

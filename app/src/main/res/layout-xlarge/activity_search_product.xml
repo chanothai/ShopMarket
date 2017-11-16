@@ -21,16 +21,15 @@
             android:layout_height="match_parent"
             android:layout_weight="0.8" />
 
-        <TextView
+        <com.company.zicure.shopmarket.view.LabelView
             android:id="@+id/txt_detail_promotion"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:padding="8dp"
             android:text="Promotion"
-            android:textAlignment="center"
-            android:textSize="30sp"
-            android:textStyle="bold" />
+            android:gravity="start|end"
+            android:textSize="30sp" />
 
     </LinearLayout>
 

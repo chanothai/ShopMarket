@@ -27,7 +27,7 @@ public class LabelView extends AppCompatTextView {
     }
 
     private void setTextView() {
-        Typeface typeface = Typeface.createFromAsset(getContext().getAssets(),"fonts/supermarket.ttf");
+        Typeface typeface = Typeface.createFromAsset(getContext().getAssets(),"fonts/Cloud-Light.otf");
         setTypeface(typeface);
     }
 }

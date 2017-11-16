@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.company.zicure.shopmarket.R;
@@ -24,6 +25,7 @@ import com.company.zicure.shopmarket.model.ResponseStatusLight4;
 import com.company.zicure.shopmarket.network.ClientHttp;
 import com.company.zicure.shopmarket.util.EventBusCart;
 import com.company.zicure.shopmarket.util.NextzyUtil;
+import com.company.zicure.shopmarket.util.PromotionItem;
 import com.squareup.otto.Subscribe;
 
 public class SearchProductActivity extends BaseActivity implements CategoryAdapter.OnClickCategoryListener, CategoryAdapter.OnClickCategoryListener2, CategoryAdapter.OnClickCategoryListener3, CategoryAdapter.OnClickCategoryListener4{
@@ -31,10 +33,17 @@ public class SearchProductActivity extends BaseActivity implements CategoryAdapt
     private Toolbar toolbar = null;
     private ImageView imgLogo = null;
     private RecyclerView listSearchItem;
+    private TextView txtDetailPromotion;
 
     //Properties
     private Context context = this;
     private int lightID = 0;
+
+    private boolean startLight = false;
+    private boolean startLight2 = false;
+    private boolean startLight3 = false;
+    private boolean startLight4 = false;
+
     private OnCloseLightListener onCloseLightListener = null;
     private OnCloseLightListener2 onCloseLightListener2 = null;
     private OnCloseLightListener3 onCloseLightListener3 = null;
@@ -44,14 +53,16 @@ public class SearchProductActivity extends BaseActivity implements CategoryAdapt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_product);
         EventBusCart.getInstance().getEventBus().register(this);
-
         bindView();
         if (savedInstanceState == null){
             listSearchItem.setAdapter(new SearchProductAdapter(this,this,this,this,this));
+
+            requestCloseLight();
         }
     }
 
     private void bindView(){
+        txtDetailPromotion = (TextView) findViewById(R.id.txt_detail_promotion);
         imgLogo = (ImageView) findViewById(R.id.logo_toolbar);
         imgLogo.setImageResource(R.drawable.logo_ajinomoto);
 
@@ -61,6 +72,13 @@ public class SearchProductActivity extends BaseActivity implements CategoryAdapt
         listSearchItem = (RecyclerView) findViewById(R.id.recyclerview_category);
         listSearchItem.setLayoutManager(new GridLayoutManager(this, 4));
         listSearchItem.setItemAnimator(new DefaultItemAnimator());
+    }
+
+    private void requestCloseLight(){
+        ClientHttp.getInstance(context).requestLight(1, 0);
+        ClientHttp.getInstance(context).requestLight2(2, 0);
+        ClientHttp.getInstance(context).requestLight3(3, 0);
+        ClientHttp.getInstance(context).requestLight4(4, 0);
     }
 
     @Override
@@ -81,7 +99,7 @@ public class SearchProductActivity extends BaseActivity implements CategoryAdapt
     }
 
 
-    private void setupListener(String status, int id){
+    private void setupListener(String status, final int id){
         dismissDialog();
         Toast.makeText(this, status, Toast.LENGTH_SHORT).show();
 
@@ -89,42 +107,35 @@ public class SearchProductActivity extends BaseActivity implements CategoryAdapt
             NextzyUtil.requestDelay(new NextzyUtil.LaunchCallback() {
                 @Override
                 public void onLaunchCallback() {
-                    ClientHttp.getInstance(context).requestLight(lightID, 0);
+                    switch (id){
+                        case 1:
+                            ClientHttp.getInstance(context).requestLight(id, 0);
+                            break;
+                        case 2:
+                            ClientHttp.getInstance(context).requestLight2(id, 0);
+                            break;
+                        case 3:
+                            ClientHttp.getInstance(context).requestLight3(id, 0);
+                            break;
+                        case 4:
+                            ClientHttp.getInstance(context).requestLight4(id, 0);
+                            break;
+                    }
                 }
             });
         }else{
             switch (id) {
                 case 1:
-                    NextzyUtil.requestDelay(new NextzyUtil.LaunchCallback() {
-                        @Override
-                        public void onLaunchCallback() {
-                            onCloseLightListener.setClose(0);
-                        }
-                    });
+                    onCloseLightListener.setClose(0);
                     break;
                 case 2:
-                    NextzyUtil.requestDelay(new NextzyUtil.LaunchCallback() {
-                        @Override
-                        public void onLaunchCallback() {
-                            onCloseLightListener2.setClose();
-                        }
-                    });
+                    onCloseLightListener2.setClose();
                     break;
                 case 3:
-                    NextzyUtil.requestDelay(new NextzyUtil.LaunchCallback() {
-                        @Override
-                        public void onLaunchCallback() {
-                            onCloseLightListener3.setClose();
-                        }
-                    });
+                    onCloseLightListener3.setClose();
                     break;
                 case 4:
-                    NextzyUtil.requestDelay(new NextzyUtil.LaunchCallback() {
-                        @Override
-                        public void onLaunchCallback() {
-                            onCloseLightListener4.setClose();
-                        }
-                    });
+                    onCloseLightListener4.setClose();
                     break;
             }
         }
@@ -132,22 +143,43 @@ public class SearchProductActivity extends BaseActivity implements CategoryAdapt
 
     @Subscribe
     public void onEventResponseStatusLight(ResponseStatusLight statusLight){
-        setupListener(statusLight.getStatus(), 1);
+        if (startLight){
+            setupListener(statusLight.getStatus(), 1);
+        }else{
+            Toast.makeText(context, statusLight.getStatus(), Toast.LENGTH_SHORT).show();
+            startLight = true;
+        }
     }
 
     @Subscribe
     public void onEventResponseStatusLight2(ResponseStatusLight2 statusLight) {
-        setupListener(statusLight.getStatus(), 2);
+        if (startLight2){
+            setupListener(statusLight.getStatus(), 2);
+        }else{
+            Toast.makeText(context, statusLight.getStatus(), Toast.LENGTH_SHORT).show();
+            startLight2 = true;
+        }
     }
 
     @Subscribe
     public void onEventResponseStatusLight3(ResponseStatusLight3 statusLight) {
-        setupListener(statusLight.getStatus(), 3);
+        if (startLight3){
+            setupListener(statusLight.getStatus(), 3);
+        }else{
+            Toast.makeText(context, statusLight.getStatus(), Toast.LENGTH_SHORT).show();
+            startLight3 = true;
+        }
+
     }
 
     @Subscribe
     public void onEventResponseStatusLight4(ResponseStatusLight4 statusLight) {
-        setupListener(statusLight.getStatus(), 4);
+        if (startLight4){
+            setupListener(statusLight.getStatus(), 4);
+        }else{
+            Toast.makeText(context, statusLight.getStatus(), Toast.LENGTH_SHORT).show();
+            startLight4 = true;
+        }
     }
 
     @Override
@@ -157,6 +189,8 @@ public class SearchProductActivity extends BaseActivity implements CategoryAdapt
         showLoadingDialog();
         lightID = 1;
         ClientHttp.getInstance(this).requestLight(lightID, 1);
+
+        txtDetailPromotion.setText(PromotionItem.arrPromotion[0]);
     }
 
     @Override
@@ -166,6 +200,8 @@ public class SearchProductActivity extends BaseActivity implements CategoryAdapt
         showLoadingDialog();
         lightID = 2;
         ClientHttp.getInstance(this).requestLight2(lightID, 1);
+
+        txtDetailPromotion.setText(PromotionItem.arrPromotion[1]);
     }
 
     @Override
@@ -175,6 +211,8 @@ public class SearchProductActivity extends BaseActivity implements CategoryAdapt
         showLoadingDialog();
         lightID = 3;
         ClientHttp.getInstance(this).requestLight3(lightID, 1);
+
+        txtDetailPromotion.setText(PromotionItem.arrPromotion[2]);
     }
 
     @Override
@@ -184,6 +222,8 @@ public class SearchProductActivity extends BaseActivity implements CategoryAdapt
         showLoadingDialog();
         lightID = 4;
         ClientHttp.getInstance(this).requestLight4(lightID, 1);
+
+        txtDetailPromotion.setText(PromotionItem.arrPromotion[3]);
     }
 
     public interface OnCloseLightListener {

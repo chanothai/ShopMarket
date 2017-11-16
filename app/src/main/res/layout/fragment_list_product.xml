@@ -23,6 +23,16 @@
             android:textColor="@android:color/black"
             android:textSize="28sp" />
 
+        <com.company.zicure.shopmarket.view.ButtonView
+            android:id="@+id/btn_remove_item"
+            android:layout_width="56dp"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/title_list_product"
+            android:layout_alignBottom="@+id/title_list_product"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="4dp"
+            android:background="@drawable/bg_select_negative"/>
+
         <View
             android:id="@+id/view_title"
             android:layout_width="match_parent"
@@ -35,9 +45,11 @@
             layout="@layout/view_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/view_title"/>
+            android:layout_below="@+id/view_title"
+            android:layout_above="@+id/view_separate"/>
 
         <View
+            android:id="@+id/view_separate"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_above="@+id/layout_result_price"
@@ -69,7 +81,6 @@
                 android:padding="8dp"
                 android:layout_gravity="center"
                 android:gravity="end"
-                android:text="100 บาท"
                 android:textSize="24sp" />
         </LinearLayout>
 

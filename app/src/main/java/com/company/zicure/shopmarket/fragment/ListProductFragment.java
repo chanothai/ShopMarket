@@ -10,10 +10,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.company.zicure.shopmarket.R;
 import com.company.zicure.shopmarket.adapter.ListProductAdapter;
 import com.company.zicure.shopmarket.model.ItemStoreModel;
+import com.company.zicure.shopmarket.util.ModelCart;
 
 import java.util.ArrayList;
 
@@ -22,7 +25,7 @@ import java.util.ArrayList;
  * Use the {@link ListProductFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ListProductFragment extends Fragment {
+public class ListProductFragment extends Fragment implements ListProductAdapter.OnResponsePriceItem, ListProductAdapter.OnRemoveItemListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -30,9 +33,14 @@ public class ListProductFragment extends Fragment {
 
     // Make : View
     private RecyclerView recyclerView = null;
+    private TextView txtResultPrice = null;
+    private ImageButton btnDeleteItem = null;
 
     //Make : properties
     private ListProductAdapter listProductAdapter = null;
+    private int resultPrice = 0;
+    private int totalAmount = 0;
+    private String baht = " บาท";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -83,21 +91,67 @@ public class ListProductFragment extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview_category);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        txtResultPrice = (TextView) view.findViewById(R.id.txt_result_price);
+        btnDeleteItem = (ImageButton) view.findViewById(R.id.btn_remove_item);
+        btnDeleteItem.setVisibility(View.GONE);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        if (savedInstanceState == null) {
+            if (ModelCart.getInstance().getItemStoreModel() != null || ModelCart.getInstance().getItemStoreModel().size() > 0) {
+                setStoreItem(ModelCart.getInstance().getItemStoreModel());
+            }
+        }
     }
 
     public void setStoreItem(ArrayList<ItemStoreModel> arrItem){
-        listProductAdapter = new ListProductAdapter(getActivity(), arrItem);
+        listProductAdapter = new ListProductAdapter(getActivity(), this, this);
         recyclerView.setAdapter(listProductAdapter);
+
+        int price = 0;
+
+        for (int i = 0; i < arrItem.size(); i++) {
+            price = Integer.parseInt(arrItem.get(i).getPrice());
+            resultPrice += price;
+        }
+
+        txtResultPrice.setText(String.valueOf(resultPrice) + baht);
     }
 
-    public void updateStoreItem(ArrayList<ItemStoreModel> arrItem){
-        listProductAdapter.setItemStore(arrItem);
+    public void updateStoreItem(){
         listProductAdapter.notifyDataSetChanged();
+    }
+
+    public void updateResultTotalPrice(int price){
+        totalAmount += price;
+        txtResultPrice.setText(String.valueOf(totalAmount) + baht);
+    }
+
+    @Override
+    public void setOnPlusPriceItem(int priceItem) {
+        totalAmount += priceItem;
+        txtResultPrice.setText(String.valueOf(totalAmount) + baht);
+    }
+
+    @Override
+    public void setOnNegativePriceItem(int priceItem) {
+        totalAmount -= priceItem;
+        txtResultPrice.setText(String.valueOf(totalAmount) + baht);
+    }
+
+
+    @Override
+    public void setOnRemove(int price, int position) {
+        listProductAdapter.notifyDataSetChanged();
+        ModelCart.getInstance().getItemStoreModel().remove(position);
+        totalAmount -= price;
+        txtResultPrice.setText(String.valueOf(totalAmount) + baht);
+    }
+
+    public interface OnOpenCheckBoxRemove {
+        void setOpenCheckbox();
     }
 }

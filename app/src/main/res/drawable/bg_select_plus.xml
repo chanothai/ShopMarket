@@ -6,5 +6,5 @@
         android:drawable="@drawable/btn_cancel_item_press"/>
 
     <item
-        android:drawable="@drawable/btn_cancel_item"/>
+        android:drawable="@drawable/plus_price"/>
 </selector>

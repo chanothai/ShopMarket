@@ -27,7 +27,7 @@
                 android:name="com.company.zicure.shopmarket.fragment.ScanProductFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="0.5"
+                android:layout_weight="0.8"
                 android:tag="scan_product_fragment"
                 tools:layout="@layout/fragment_scan_product" />
 

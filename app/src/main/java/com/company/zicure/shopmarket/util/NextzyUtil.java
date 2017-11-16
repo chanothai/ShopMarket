@@ -37,7 +37,7 @@ public class NextzyUtil {
                     callback.onLaunchCallback();
                 }
             }
-        },3000);
+        },2000);
     }
 
     public static void launch(final LaunchCallback callback){

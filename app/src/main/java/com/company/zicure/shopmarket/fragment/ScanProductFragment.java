@@ -4,6 +4,7 @@ package com.company.zicure.shopmarket.fragment;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -106,6 +107,7 @@ public class ScanProductFragment extends Fragment implements ZXingScannerView.Re
         super.onActivityCreated(savedInstanceState);
         if (savedInstanceState == null) {
             permissionCamera();
+
         }
     }
 
@@ -130,16 +132,11 @@ public class ScanProductFragment extends Fragment implements ZXingScannerView.Re
 
     @Override
     public void handleResult(Result result) {
+        MediaPlayer mp = MediaPlayer.create(getActivity(), R.raw.beep_scan);
+        mp.start();
+
         String id = result.getText();
-        if (ModelCart.getInstance().getItemStoreModel().size() > 0){
-            for (int i = 0; i < ModelCart.getInstance().getItemStoreModel().size(); i++) {
-                if (!id.equalsIgnoreCase(ModelCart.getInstance().getItemStoreModel().get(i).getBarcode())){
-                    ((ShopActivity)getActivity()).queryItem(id);
-                }
-            }
-        }else{
-            ((ShopActivity)getActivity()).queryItem(id);
-        }
+        ((ShopActivity)getActivity()).queryItem(id);
     }
 
     public void setDetailItem(ItemStoreModel itemStoreModel){

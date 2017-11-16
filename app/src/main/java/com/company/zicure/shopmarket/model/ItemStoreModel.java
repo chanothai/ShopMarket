@@ -9,6 +9,7 @@ public class ItemStoreModel {
     private String name;
     private int qty;
     private String price;
+    private int resultPrice;
     private String imgItem;
     private String promotion;
     private String detail;
@@ -67,5 +68,13 @@ public class ItemStoreModel {
 
     public void setBarcode(String barcode) {
         this.barcode = barcode;
+    }
+
+    public int getResultPrice() {
+        return resultPrice;
+    }
+
+    public void setResultPrice(int resultPrice) {
+        this.resultPrice = resultPrice;
     }
 }

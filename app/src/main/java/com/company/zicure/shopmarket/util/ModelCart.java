@@ -13,7 +13,7 @@ public class ModelCart {
     private static ModelCart me = null;
     private ArrayList<ItemStoreModel> itemStoreModel = null;
 
-    private ModelCart() {
+    public ModelCart() {
         itemStoreModel = new ArrayList<>();
     }
 
@@ -31,5 +31,9 @@ public class ModelCart {
 
     public void setItemStoreModel(ArrayList<ItemStoreModel> itemStoreModel) {
         this.itemStoreModel = itemStoreModel;
+    }
+
+    public void removeData(){
+        itemStoreModel.clear();
     }
 }

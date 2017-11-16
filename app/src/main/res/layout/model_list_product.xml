@@ -3,17 +3,31 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:background="?attr/selectableItemBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <com.company.zicure.shopmarket.view.CheckBoxView
+            android:id="@+id/check_delete"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingStart="8dp"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="20sp"
+            android:text="ลบ"
+            android:button="@drawable/check"
+            android:visibility="visible" />
 
         <com.company.zicure.shopmarket.view.LabelView
             android:id="@+id/txt_name_product"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.6"
+            android:layout_weight="0.7"
             android:gravity="start|center_vertical"
             android:padding="8dp"
             android:text="Name"
@@ -22,22 +36,25 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_weight="0.8"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp">
 
             <com.company.zicure.shopmarket.view.ButtonView
                 android:id="@+id/btn_plus"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="1"
-                android:text="+" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="10dp"
+                android:background="@drawable/bg_select_plus"
+                android:layout_gravity="center"
+                android:scaleType="fitCenter"/>
 
             <com.company.zicure.shopmarket.view.LabelView
                 android:id="@+id/txt_qty_product"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="0.8"
                 android:gravity="center"
                 android:padding="8dp"
                 android:text="QTY"
@@ -45,11 +62,12 @@
 
             <com.company.zicure.shopmarket.view.ButtonView
                 android:id="@+id/btn_negative"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="1"
-                android:text="-" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="10dp"
+                android:background="@drawable/bg_select_negative"
+                android:layout_gravity="center"
+                android:scaleType="fitCenter"/>
 
         </LinearLayout>
 

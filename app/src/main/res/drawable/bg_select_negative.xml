@@ -3,8 +3,8 @@
 
     <item
         android:state_pressed="true"
-        android:drawable="@drawable/btn_select_item_press"/>
+        android:drawable="@drawable/btn_cancel_item_press"/>
 
     <item
-        android:drawable="@drawable/btn_select_item"/>
+        android:drawable="@drawable/negative_price"/>
 </selector>
