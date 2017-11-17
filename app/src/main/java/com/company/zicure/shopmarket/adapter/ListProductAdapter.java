@@ -54,7 +54,7 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
         qty = ModelCart.getInstance().getItemStoreModel().get(position).getQty();
         resultPrice = price * qty;
 
-        if (ModelCart.getInstance().getItemStoreModel().get(position).getName().length() > 20) {
+        if (ModelCart.getInstance().getItemStoreModel().get(position).getName().length() >= 23) {
             holder.nameItem.setText(ModelCart.getInstance().getItemStoreModel().get(position).getName().substring(0, 23) + "...");
         }else{
             holder.nameItem.setText(ModelCart.getInstance().getItemStoreModel().get(position).getName());

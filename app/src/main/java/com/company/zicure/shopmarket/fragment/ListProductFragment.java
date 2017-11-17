@@ -10,6 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -35,7 +37,7 @@ public class ListProductFragment extends Fragment implements ListProductAdapter.
     // Make : View
     private RecyclerView recyclerView = null;
     private TextView txtResultPrice = null;
-    private ImageButton btnDeleteItem = null;
+    private CheckBox btnDeleteItem = null;
 
     //Make : properties
     private ListProductAdapter listProductAdapter = null;
@@ -94,8 +96,7 @@ public class ListProductFragment extends Fragment implements ListProductAdapter.
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         txtResultPrice = (TextView) view.findViewById(R.id.txt_result_price);
-        btnDeleteItem = (ImageButton) view.findViewById(R.id.btn_remove_item);
-        btnDeleteItem.setVisibility(View.GONE);
+        btnDeleteItem = (CheckBox) view.findViewById(R.id.btn_remove_item);
     }
 
     @Override
@@ -106,6 +107,20 @@ public class ListProductFragment extends Fragment implements ListProductAdapter.
                 setStoreItem(ModelCart.getInstance().getItemStoreModel());
             }
         }
+
+        btnDeleteItem.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean check) {
+                if (check){
+                    ModelCart.getInstance().getItemStoreModel().clear();
+                    if (listProductAdapter != null) {
+                        listProductAdapter.notifyDataSetChanged();
+                        totalAmount = 0;
+                        txtResultPrice.setText(String.valueOf(totalAmount) +" บ.");
+                    }
+                }
+            }
+        });
     }
 
     public void setStoreItem(ArrayList<ItemStoreModel> arrItem){
@@ -124,6 +139,7 @@ public class ListProductFragment extends Fragment implements ListProductAdapter.
 
     public void updateStoreItem(){
         listProductAdapter.notifyDataSetChanged();
+        recyclerView.smoothScrollToPosition(ModelCart.getInstance().getItemStoreModel().size());
     }
 
     public void updateResultTotalPrice(int price){

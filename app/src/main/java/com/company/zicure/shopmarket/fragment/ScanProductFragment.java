@@ -50,6 +50,8 @@ public class ScanProductFragment extends Fragment implements ZXingScannerView.Re
     // Make: Properties
     private DetailProductAdapter detailProductAdapter = null;
 
+    private MediaPlayer mp = null;
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -110,6 +112,8 @@ public class ScanProductFragment extends Fragment implements ZXingScannerView.Re
         if (savedInstanceState == null) {
             permissionCamera();
 
+            mp = MediaPlayer.create(getActivity(), R.raw.beep_scan);
+
             ListProductAdapter.CLICKITEM = this;
         }
     }
@@ -135,7 +139,6 @@ public class ScanProductFragment extends Fragment implements ZXingScannerView.Re
 
     @Override
     public void handleResult(Result result) {
-        MediaPlayer mp = MediaPlayer.create(getActivity(), R.raw.beep_scan);
         mp.start();
 
         String id = result.getText();

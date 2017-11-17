@@ -23,15 +23,16 @@
             android:textColor="@android:color/black"
             android:textSize="28sp" />
 
-        <com.company.zicure.shopmarket.view.ButtonView
+        <com.company.zicure.shopmarket.view.CheckBoxView
             android:id="@+id/btn_remove_item"
-            android:layout_width="56dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/title_list_product"
             android:layout_alignBottom="@+id/title_list_product"
-            android:layout_alignParentEnd="true"
-            android:layout_margin="4dp"
-            android:background="@drawable/bg_select_negative"/>
+            android:layout_alignParentStart="true"
+            android:text="ลบทั้งหมด"
+            android:button="@drawable/garbage"
+            android:layout_margin="4dp" />
 
         <View
             android:id="@+id/view_title"
