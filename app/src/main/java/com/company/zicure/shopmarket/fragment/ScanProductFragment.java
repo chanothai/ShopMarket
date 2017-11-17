@@ -23,6 +23,7 @@ import com.company.zicure.shopmarket.R;
 import com.company.zicure.shopmarket.activity.MainActivity;
 import com.company.zicure.shopmarket.activity.ShopActivity;
 import com.company.zicure.shopmarket.adapter.DetailProductAdapter;
+import com.company.zicure.shopmarket.adapter.ListProductAdapter;
 import com.company.zicure.shopmarket.common.BaseActivity;
 import com.company.zicure.shopmarket.model.ItemStoreModel;
 import com.company.zicure.shopmarket.util.ModelCart;
@@ -35,7 +36,7 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
  * Use the {@link ScanProductFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ScanProductFragment extends Fragment implements ZXingScannerView.ResultHandler{
+public class ScanProductFragment extends Fragment implements ZXingScannerView.ResultHandler, ListProductAdapter.OnClickSelectItemListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -105,9 +106,11 @@ public class ScanProductFragment extends Fragment implements ZXingScannerView.Re
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         if (savedInstanceState == null) {
             permissionCamera();
 
+            ListProductAdapter.CLICKITEM = this;
         }
     }
 
@@ -140,10 +143,19 @@ public class ScanProductFragment extends Fragment implements ZXingScannerView.Re
     }
 
     public void setDetailItem(ItemStoreModel itemStoreModel){
+        setViewItem(itemStoreModel);
+    }
+
+    private void setViewItem(ItemStoreModel itemStoreModel) {
         detailProductAdapter = new DetailProductAdapter(itemStoreModel);
         recyclerView.setAdapter(detailProductAdapter);
 
         int imgId = getActivity().getResources().getIdentifier(itemStoreModel.getImgItem(), "drawable", getActivity().getPackageName());
         imgItem.setImageResource(imgId);
+    }
+
+    @Override
+    public void onClickItem(View view, int position) {
+        setViewItem(ModelCart.getInstance().getItemStoreModel().get(position));
     }
 }

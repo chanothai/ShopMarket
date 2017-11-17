@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.company.zicure.shopmarket.R;
+import com.company.zicure.shopmarket.activity.ShopActivity;
 import com.company.zicure.shopmarket.model.ItemStoreModel;
 import com.company.zicure.shopmarket.util.ModelCart;
 import com.company.zicure.shopmarket.util.NextzyUtil;
@@ -32,6 +33,7 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
 
     private OnResponsePriceItem onResponsePriceItem = null;
     private OnRemoveItemListener onRemoveItemListener = null;
+    public static OnClickSelectItemListener CLICKITEM = null;
 
     public ListProductAdapter(Context context, OnResponsePriceItem onResponsePriceItem, OnRemoveItemListener onRemoveItemListener){
         this.context = context;
@@ -52,7 +54,12 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
         qty = ModelCart.getInstance().getItemStoreModel().get(position).getQty();
         resultPrice = price * qty;
 
-        holder.nameItem.setText(ModelCart.getInstance().getItemStoreModel().get(position).getName());
+        if (ModelCart.getInstance().getItemStoreModel().get(position).getName().length() > 20) {
+            holder.nameItem.setText(ModelCart.getInstance().getItemStoreModel().get(position).getName().substring(0, 23) + "...");
+        }else{
+            holder.nameItem.setText(ModelCart.getInstance().getItemStoreModel().get(position).getName());
+        }
+
         holder.qty.setText(String.valueOf(qty));
         holder.price.setText(String.valueOf(resultPrice) + bath);
         ModelCart.getInstance().getItemStoreModel().get(position).setResultPrice(resultPrice);
@@ -99,12 +106,20 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean check) {
+                ((ShopActivity)context).showLoadingDialog();
                 NextzyUtil.launchDelay(new NextzyUtil.LaunchCallback() {
                     @Override
                     public void onLaunchCallback() {
                         onRemoveItemListener.setOnRemove(ModelCart.getInstance().getItemStoreModel().get(position).getResultPrice(), position);
                     }
                 });
+            }
+        });
+
+        holder.setOnClickSelectItem(new OnClickSelectItemListener() {
+            @Override
+            public void onClickItem(View view, int position) {
+
             }
         });
     }
@@ -119,6 +134,8 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
         public ImageButton btnPlus, btnNegative;
         public CheckBox checkBox;
 
+        public OnClickSelectItemListener onClickSelectItemListener;
+
         public ListProductHolder(View itemView) {
             super(itemView);
             nameItem = (TextView) itemView.findViewById(R.id.txt_name_product);
@@ -132,9 +149,14 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
         }
 
 
+        public void setOnClickSelectItem(OnClickSelectItemListener onClickSelectItemListener){
+            this.onClickSelectItemListener = onClickSelectItemListener;
+        }
+
         @Override
         public void onClick(View view) {
-
+            onClickSelectItemListener.onClickItem(view, getAdapterPosition());
+            CLICKITEM.onClickItem(view, getAdapterPosition());
         }
     }
 
@@ -145,5 +167,9 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
 
     public interface OnRemoveItemListener {
         void setOnRemove(int price, int position);
+    }
+
+    public interface OnClickSelectItemListener {
+        void onClickItem(View view, int position);
     }
 }

@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.company.zicure.shopmarket.R;
+import com.company.zicure.shopmarket.activity.ShopActivity;
 import com.company.zicure.shopmarket.adapter.ListProductAdapter;
 import com.company.zicure.shopmarket.model.ItemStoreModel;
 import com.company.zicure.shopmarket.util.ModelCart;
@@ -146,12 +147,11 @@ public class ListProductFragment extends Fragment implements ListProductAdapter.
     @Override
     public void setOnRemove(int price, int position) {
         listProductAdapter.notifyDataSetChanged();
+
         ModelCart.getInstance().getItemStoreModel().remove(position);
         totalAmount -= price;
         txtResultPrice.setText(String.valueOf(totalAmount) + baht);
-    }
 
-    public interface OnOpenCheckBoxRemove {
-        void setOpenCheckbox();
+        ((ShopActivity)getActivity()).dismissDialog();
     }
 }
