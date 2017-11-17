@@ -6,8 +6,10 @@ import android.os.Handler;
  * Created by 4GRYZ52 on 10/21/2016.
  */
 public class NextzyUtil {
+    public static Handler handlerRequest;
 
     public static void launchDelay(final LaunchCallback callback) {
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -19,7 +21,8 @@ public class NextzyUtil {
     }
 
     public static void requestDelay(final LaunchCallback callback) {
-        new Handler().postDelayed(new Runnable() {
+        handlerRequest = new Handler();
+        handlerRequest.postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (callback != null) {
@@ -27,6 +30,10 @@ public class NextzyUtil {
                 }
             }
         },10000);
+    }
+
+    public static Handler getHandlerRequest(){
+        return handlerRequest;
     }
 
     public static void deleyCamera(final LaunchCallback callback) {

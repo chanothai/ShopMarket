@@ -3,6 +3,7 @@ package com.company.zicure.shopmarket.activity;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -55,6 +56,8 @@ public class ShopActivity extends BaseActivity {
             mHelper = new DBHelper(this);
             mDb = mHelper.getWritableDatabase();
 
+            PowerManager.WakeLock wl = ((PowerManager)getSystemService(POWER_SERVICE)).newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "tag");
+            wl.acquire();
         }
     }
 
@@ -232,5 +235,7 @@ public class ShopActivity extends BaseActivity {
         super.onDestroy();
         mHelper.close();
         mDb.close();
+
+        ModelCart.getInstance().getItemStoreModel().clear();
     }
 }

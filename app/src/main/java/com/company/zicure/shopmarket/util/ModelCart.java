@@ -12,9 +12,11 @@ import java.util.ArrayList;
 public class ModelCart {
     private static ModelCart me = null;
     private ArrayList<ItemStoreModel> itemStoreModel = null;
+    private StartLightResponse startLightResponse = null;
 
     public ModelCart() {
         itemStoreModel = new ArrayList<>();
+        startLightResponse = new StartLightResponse();
     }
 
     public static ModelCart getInstance(){
@@ -35,5 +37,9 @@ public class ModelCart {
 
     public void removeData(){
         itemStoreModel.clear();
+    }
+
+    public StartLightResponse getStartLightResponse(){
+        return startLightResponse;
     }
 }

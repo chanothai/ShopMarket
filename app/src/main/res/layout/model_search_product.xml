@@ -23,7 +23,7 @@
         android:id="@+id/shadow_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.1"
+        android:alpha="0"
         android:visibility="gone"
         android:clickable="true"
         android:background="@android:color/black" />

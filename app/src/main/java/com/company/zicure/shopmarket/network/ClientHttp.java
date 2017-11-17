@@ -32,7 +32,7 @@ public class ClientHttp {
 
     public ClientHttp(Context context){
         this.context = context;
-        retrofit = RetrofitAPI.newInstance("http://192.168.4.1").getRetrofit();
+        retrofit = RetrofitAPI.newInstance("http://192.168.2.10").getRetrofit();
         service = retrofit.create(LogApi.class);
         gson = new GsonBuilder().disableHtmlEscaping().create();
     }

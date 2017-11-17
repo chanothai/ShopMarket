@@ -46,11 +46,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
         if (position == 0) {
             holder.title.setText("ตรวจสอบราคาสินค้าและคำนวณราคารวม");
-            holder.imgCategory.setImageDrawable(context.getDrawable(R.drawable.online_shop));
+            holder.imgCategory.setImageDrawable(context.getDrawable(R.drawable.cart));
         }
         else if (position == 1) {
             holder.title.setText("ค้นหาเชลจำหน่ายสินค้า");
-            holder.imgCategory.setImageDrawable(context.getDrawable(R.drawable.cart));
+            holder.imgCategory.setImageDrawable(context.getDrawable(R.drawable.online_shop));
         }
     }
 

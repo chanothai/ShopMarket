@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.company.zicure.shopmarket.R;
 import com.company.zicure.shopmarket.model.ItemStoreModel;
 import com.company.zicure.shopmarket.util.ModelCart;
+import com.company.zicure.shopmarket.util.NextzyUtil;
 
 import java.util.ArrayList;
 
@@ -98,7 +99,12 @@ public class ListProductAdapter extends RecyclerView.Adapter<ListProductAdapter.
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean check) {
-                onRemoveItemListener.setOnRemove(ModelCart.getInstance().getItemStoreModel().get(position).getResultPrice(), position);
+                NextzyUtil.launchDelay(new NextzyUtil.LaunchCallback() {
+                    @Override
+                    public void onLaunchCallback() {
+                        onRemoveItemListener.setOnRemove(ModelCart.getInstance().getItemStoreModel().get(position).getResultPrice(), position);
+                    }
+                });
             }
         });
     }

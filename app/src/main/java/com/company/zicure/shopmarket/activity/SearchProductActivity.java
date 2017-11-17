@@ -1,6 +1,7 @@
 package com.company.zicure.shopmarket.activity;
 
 import android.content.Context;
+import android.os.PowerManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -24,6 +25,7 @@ import com.company.zicure.shopmarket.model.ResponseStatusLight3;
 import com.company.zicure.shopmarket.model.ResponseStatusLight4;
 import com.company.zicure.shopmarket.network.ClientHttp;
 import com.company.zicure.shopmarket.util.EventBusCart;
+import com.company.zicure.shopmarket.util.ModelCart;
 import com.company.zicure.shopmarket.util.NextzyUtil;
 import com.company.zicure.shopmarket.util.PromotionItem;
 import com.squareup.otto.Subscribe;
@@ -38,11 +40,6 @@ public class SearchProductActivity extends BaseActivity implements CategoryAdapt
     //Properties
     private Context context = this;
     private int lightID = 0;
-
-    private boolean startLight = false;
-    private boolean startLight2 = false;
-    private boolean startLight3 = false;
-    private boolean startLight4 = false;
 
     private OnCloseLightListener onCloseLightListener = null;
     private OnCloseLightListener2 onCloseLightListener2 = null;
@@ -75,10 +72,21 @@ public class SearchProductActivity extends BaseActivity implements CategoryAdapt
     }
 
     private void requestCloseLight(){
-        ClientHttp.getInstance(context).requestLight(1, 0);
-        ClientHttp.getInstance(context).requestLight2(2, 0);
-        ClientHttp.getInstance(context).requestLight3(3, 0);
-        ClientHttp.getInstance(context).requestLight4(4, 0);
+        if (!ModelCart.getInstance().getStartLightResponse().startLight){
+            ClientHttp.getInstance(context).requestLight(1, 0);
+        }
+
+        if (!ModelCart.getInstance().getStartLightResponse().startLight2){
+            ClientHttp.getInstance(context).requestLight2(2, 0);
+        }
+
+        if (!ModelCart.getInstance().getStartLightResponse().startLight3){
+            ClientHttp.getInstance(context).requestLight3(3, 0);
+        }
+
+        if (!ModelCart.getInstance().getStartLightResponse().startLight4){
+            ClientHttp.getInstance(context).requestLight4(4, 0);
+        }
     }
 
     @Override
@@ -95,6 +103,11 @@ public class SearchProductActivity extends BaseActivity implements CategoryAdapt
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        ModelCart.getInstance().getStartLightResponse().startLight = false;
+        ModelCart.getInstance().getStartLightResponse().startLight2 = false;
+        ModelCart.getInstance().getStartLightResponse().startLight3 = false;
+        ModelCart.getInstance().getStartLightResponse().startLight4 = false;
+
         EventBusCart.getInstance().getEventBus().unregister(this);
     }
 
@@ -109,16 +122,24 @@ public class SearchProductActivity extends BaseActivity implements CategoryAdapt
                 public void onLaunchCallback() {
                     switch (id){
                         case 1:
-                            ClientHttp.getInstance(context).requestLight(id, 0);
+                            if (ModelCart.getInstance().getStartLightResponse().startLight){
+                                ClientHttp.getInstance(context).requestLight(id, 0);
+                            }
                             break;
                         case 2:
-                            ClientHttp.getInstance(context).requestLight2(id, 0);
+                            if (ModelCart.getInstance().getStartLightResponse().startLight2){
+                                ClientHttp.getInstance(context).requestLight2(id, 0);
+                            }
                             break;
                         case 3:
-                            ClientHttp.getInstance(context).requestLight3(id, 0);
+                            if (ModelCart.getInstance().getStartLightResponse().startLight3){
+                                ClientHttp.getInstance(context).requestLight3(id, 0);
+                            }
                             break;
                         case 4:
-                            ClientHttp.getInstance(context).requestLight4(id, 0);
+                            if (ModelCart.getInstance().getStartLightResponse().startLight4){
+                                ClientHttp.getInstance(context).requestLight4(id, 0);
+                            }
                             break;
                     }
                 }
@@ -143,42 +164,42 @@ public class SearchProductActivity extends BaseActivity implements CategoryAdapt
 
     @Subscribe
     public void onEventResponseStatusLight(ResponseStatusLight statusLight){
-        if (startLight){
+        if (ModelCart.getInstance().getStartLightResponse().startLight){
             setupListener(statusLight.getStatus(), 1);
         }else{
             Toast.makeText(context, statusLight.getStatus(), Toast.LENGTH_SHORT).show();
-            startLight = true;
+            ModelCart.getInstance().getStartLightResponse().startLight = true;
         }
     }
 
     @Subscribe
     public void onEventResponseStatusLight2(ResponseStatusLight2 statusLight) {
-        if (startLight2){
+        if (ModelCart.getInstance().getStartLightResponse().startLight2){
             setupListener(statusLight.getStatus(), 2);
         }else{
             Toast.makeText(context, statusLight.getStatus(), Toast.LENGTH_SHORT).show();
-            startLight2 = true;
+            ModelCart.getInstance().getStartLightResponse().startLight2 = true;
         }
     }
 
     @Subscribe
     public void onEventResponseStatusLight3(ResponseStatusLight3 statusLight) {
-        if (startLight3){
+        if (ModelCart.getInstance().getStartLightResponse().startLight3){
             setupListener(statusLight.getStatus(), 3);
         }else{
             Toast.makeText(context, statusLight.getStatus(), Toast.LENGTH_SHORT).show();
-            startLight3 = true;
+            ModelCart.getInstance().getStartLightResponse().startLight3 = true;
         }
 
     }
 
     @Subscribe
     public void onEventResponseStatusLight4(ResponseStatusLight4 statusLight) {
-        if (startLight4){
+        if (ModelCart.getInstance().getStartLightResponse().startLight4){
             setupListener(statusLight.getStatus(), 4);
         }else{
             Toast.makeText(context, statusLight.getStatus(), Toast.LENGTH_SHORT).show();
-            startLight4 = true;
+            ModelCart.getInstance().getStartLightResponse().startLight4 = true;
         }
     }
 
