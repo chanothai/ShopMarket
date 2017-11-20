@@ -117,6 +117,8 @@ public class ListProductFragment extends Fragment implements ListProductAdapter.
                         listProductAdapter.notifyDataSetChanged();
                         totalAmount = 0;
                         txtResultPrice.setText(String.valueOf(totalAmount) +" บ.");
+
+                        ((ScanProductFragment)getFragmentManager().findFragmentByTag("scan_product_fragment")).setDetailItem(null);
                     }
                 }
             }
@@ -169,5 +171,6 @@ public class ListProductFragment extends Fragment implements ListProductAdapter.
         txtResultPrice.setText(String.valueOf(totalAmount) + baht);
 
         ((ShopActivity)getActivity()).dismissDialog();
+        ((ScanProductFragment)getFragmentManager().findFragmentByTag("scan_product_fragment")).setDetailItem(null);
     }
 }

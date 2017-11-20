@@ -182,6 +182,7 @@ public class ShopActivity extends BaseActivity {
                                 Integer.parseInt(ModelCart.getInstance().getItemStoreModel().get(i).getPrice());
                         ModelCart.getInstance().getItemStoreModel().get(i).setResultPrice(result);
 
+                        fragment.setDetailItem(ModelCart.getInstance().getItemStoreModel().get(i));
                         listProductFragment.updateStoreItem();
                         listProductFragment.updateResultTotalPrice(Integer.parseInt(ModelCart.getInstance().getItemStoreModel().get(i).getPrice()));
                         return true;

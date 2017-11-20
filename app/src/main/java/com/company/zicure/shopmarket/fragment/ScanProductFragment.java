@@ -146,7 +146,12 @@ public class ScanProductFragment extends Fragment implements ZXingScannerView.Re
     }
 
     public void setDetailItem(ItemStoreModel itemStoreModel){
-        setViewItem(itemStoreModel);
+        if (itemStoreModel != null){
+            setViewItem(itemStoreModel);
+        }else{
+            recyclerView.setAdapter(null);
+            imgItem.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void setViewItem(ItemStoreModel itemStoreModel) {
@@ -155,6 +160,7 @@ public class ScanProductFragment extends Fragment implements ZXingScannerView.Re
 
         int imgId = getActivity().getResources().getIdentifier(itemStoreModel.getImgItem(), "drawable", getActivity().getPackageName());
         imgItem.setImageResource(imgId);
+        imgItem.setVisibility(View.VISIBLE);
     }
 
     @Override
