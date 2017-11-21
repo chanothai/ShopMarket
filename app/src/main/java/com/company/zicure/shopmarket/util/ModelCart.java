@@ -2,6 +2,7 @@ package com.company.zicure.shopmarket.util;
 
 
 import com.company.zicure.shopmarket.model.ItemStoreModel;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
@@ -14,9 +15,12 @@ public class ModelCart {
     private ArrayList<ItemStoreModel> itemStoreModel = null;
     private StartLightResponse startLightResponse = null;
 
+    public int totalPrice;
+
     public ModelCart() {
         itemStoreModel = new ArrayList<>();
         startLightResponse = new StartLightResponse();
+        totalPrice = 0;
     }
 
     public static ModelCart getInstance(){

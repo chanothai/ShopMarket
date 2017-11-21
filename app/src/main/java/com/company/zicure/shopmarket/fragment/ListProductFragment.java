@@ -42,7 +42,6 @@ public class ListProductFragment extends Fragment implements ListProductAdapter.
     //Make : properties
     private ListProductAdapter listProductAdapter = null;
     private int resultPrice = 0;
-    private int totalAmount = 0;
     private String baht = " บาท";
 
     // TODO: Rename and change types of parameters
@@ -115,14 +114,20 @@ public class ListProductFragment extends Fragment implements ListProductAdapter.
                     ModelCart.getInstance().getItemStoreModel().clear();
                     if (listProductAdapter != null) {
                         listProductAdapter.notifyDataSetChanged();
-                        totalAmount = 0;
-                        txtResultPrice.setText(String.valueOf(totalAmount) +" บ.");
+                        ModelCart.getInstance().totalPrice = 0;
+                        txtResultPrice.setText(String.valueOf(ModelCart.getInstance().totalPrice) +" บ.");
 
                         ((ScanProductFragment)getFragmentManager().findFragmentByTag("scan_product_fragment")).setDetailItem(null);
                     }
                 }
             }
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
     }
 
     public void setStoreItem(ArrayList<ItemStoreModel> arrItem){
@@ -136,7 +141,11 @@ public class ListProductFragment extends Fragment implements ListProductAdapter.
             resultPrice += price;
         }
 
-        txtResultPrice.setText(String.valueOf(resultPrice) + baht);
+        if (ModelCart.getInstance().totalPrice == 0) {
+            txtResultPrice.setText(String.valueOf(resultPrice) + baht);
+        }else{
+            txtResultPrice.setText(String.valueOf(ModelCart.getInstance().totalPrice) + baht);
+        }
     }
 
     public void updateStoreItem(){
@@ -145,20 +154,20 @@ public class ListProductFragment extends Fragment implements ListProductAdapter.
     }
 
     public void updateResultTotalPrice(int price){
-        totalAmount += price;
-        txtResultPrice.setText(String.valueOf(totalAmount) + baht);
+        ModelCart.getInstance().totalPrice += price;
+        txtResultPrice.setText(String.valueOf(ModelCart.getInstance().totalPrice) + baht);
     }
 
     @Override
     public void setOnPlusPriceItem(int priceItem) {
-        totalAmount += priceItem;
-        txtResultPrice.setText(String.valueOf(totalAmount) + baht);
+        ModelCart.getInstance().totalPrice += priceItem;
+        txtResultPrice.setText(String.valueOf(ModelCart.getInstance().totalPrice) + baht);
     }
 
     @Override
     public void setOnNegativePriceItem(int priceItem) {
-        totalAmount -= priceItem;
-        txtResultPrice.setText(String.valueOf(totalAmount) + baht);
+        ModelCart.getInstance().totalPrice -= priceItem;
+        txtResultPrice.setText(String.valueOf(ModelCart.getInstance().totalPrice) + baht);
     }
 
 
@@ -167,8 +176,8 @@ public class ListProductFragment extends Fragment implements ListProductAdapter.
         listProductAdapter.notifyDataSetChanged();
 
         ModelCart.getInstance().getItemStoreModel().remove(position);
-        totalAmount -= price;
-        txtResultPrice.setText(String.valueOf(totalAmount) + baht);
+        ModelCart.getInstance().totalPrice -= price;
+        txtResultPrice.setText(String.valueOf(ModelCart.getInstance().totalPrice) + baht);
 
         ((ShopActivity)getActivity()).dismissDialog();
         ((ScanProductFragment)getFragmentManager().findFragmentByTag("scan_product_fragment")).setDetailItem(null);
