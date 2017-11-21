@@ -212,6 +212,11 @@ public class ShopActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         fragment.startCamera();
+        int itemLast = ModelCart.getInstance().getItemStoreModel().size();
+        if (itemLast > 0) {
+            itemLast -= 1;
+            fragment.setDetailItem(ModelCart.getInstance().getItemStoreModel().get(itemLast));
+        }
     }
 
     @Override
@@ -236,7 +241,5 @@ public class ShopActivity extends BaseActivity {
         super.onDestroy();
         mHelper.close();
         mDb.close();
-
-        ModelCart.getInstance().getItemStoreModel().clear();
     }
 }
